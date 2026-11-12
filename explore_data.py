@@ -2,11 +2,11 @@ import pandas as pd
 
 # load data set
 
-df = pd.read_csv("data/spam_dataset.csv")
+df = pd.read_csv("data/raw_spam_dataset.csv")
 
 # data exploration
 
-print("First Email :")
+print("First five Email :")
 print(df.head())
 
 # show total email

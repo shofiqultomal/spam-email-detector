@@ -2,8 +2,15 @@ import pandas as pd
 import  re
 from sklearn.feature_extraction.text import CountVectorizer
 
-df = pd.read_csv("data/spam_dataset.\
-csv")
+import pandas as pd
+
+df = pd.read_csv("data/raw_spam_dataset.csv")
+
+print("Column Names:", df.columns.tolist())
+print("\nFirst 5 Rows:")
+print(df.head())
+
+#exit()
 
 # text cleaning function
 def clean_text(text):
@@ -20,7 +27,7 @@ print(df["message"][0])
 print("\nCleaned Message")
 print(df["clean_message"][0])
 
-# feature and extration
+# feature and extraction
 
 vectorizer = CountVectorizer()
 x =vectorizer.fit_transform(df["clean_message"])
@@ -37,4 +44,7 @@ feature_df = pd.DataFrame(
 
 print("\nNumerical Data:")
 print(feature_df.head())
+
+df[["clean_message","label"]].to_csv("data/processed_spam.csv",index=False)
+print("\nData saved")
 
