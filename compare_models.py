@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
@@ -45,67 +46,76 @@ models = {
     "Logistic Regression": LogisticRegression(max_iter=1000),
     "Linear SVM": LinearSVC(max_iter=10000)
 }
+vectorizers = {
+    "CountVectorizer": CountVectorizer(),
+    "TF-IDF": TfidfVectorizer()
+}
 
 
-# Train and Evaluate Models
+# Train and Evaluate Model
+
 for name, model in models.items():
+    for vectorizer_name, vectorizer in vectorizers.items():
 
-    print("\n" + "=" * 50)
-    print("Training Model:", name)
-    print("=" * 50)
+
 
     # Pipeline
-    pipeline = Pipeline([
-        ("vectorizer", CountVectorizer()),
-        ("model", model)
-    ])
+        pipeline = Pipeline([
+            ("vectorizer", vectorizer),
+            ("model", model)
+        ])
 
-    # Train Model
-    pipeline.fit(x_train, y_train)
+        # Train Model
+        pipeline.fit(x_train, y_train)
 
-    # Prediction
-    predictions = pipeline.predict(x_test)
+        # Prediction
+        predictions = pipeline.predict(x_test)
 
-    # Evaluation
-    accuracy = accuracy_score(y_test, predictions)
+        # Evaluation
+        accuracy = accuracy_score(y_test, predictions)
 
-    precision = precision_score(
-        y_test,
-        predictions,
-        pos_label="spam"
-    )
+        precision = precision_score(
+            y_test,
+            predictions,
+            pos_label="spam"
+        )
 
-    recall = recall_score(
-        y_test,
-        predictions,
-        pos_label="spam"
-    )
+        recall = recall_score(
+            y_test,
+            predictions,
+            pos_label="spam"
+        )
 
-    f1 = f1_score(
-        y_test,
-        predictions,
-        pos_label="spam"
-    )
+        f1 = f1_score(
+            y_test,
+            predictions,
+            pos_label="spam"
+        )
 
-    # Store Results
-    results.append({
-        "Model": name,
-        "Accuracy": accuracy,
-        "Precision": precision,
-        "Recall": recall,
-        "F1 Score": f1
-    })
+        # Store Results
+        results.append({
 
-    # Classification Report
-    print("\nClassification Report:")
-    print(classification_report(y_test, predictions))
+            "Model": name,
+            "Vectorizer": vectorizer_name,
+            "Accuracy": accuracy,
+            "Precision": precision,
+            "Recall": recall,
+            "F1 Score": f1
+        })
+        print("\n" + "=" * 50)
+        print("Training Model:", name)
+        print("Using Vectorizer:", vectorizer_name)
+        print("=" * 50)
+        # Classification Report
+        print("\nClassification Report:")
+        print(classification_report(y_test, predictions))
 
-    # Confusion Matrix
-    print("Confusion Matrix:")
-    print(confusion_matrix(
-        y_test,
-        predictions,
-        labels=["ham", "spam"]
+        # Confusion Matrix
+        print("Confusion Matrix:")
+        print(confusion_matrix(
+            y_test,
+            predictions,
+            labels=["ham", "spam"]
     ))
 
 
@@ -126,3 +136,4 @@ results_df.to_csv(
     "model_comparison_results.csv",
     index=False
 )
+
